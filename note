@@ -1,0 +1,6 @@
+pip install pyperclip
+pip install opencv-python
+pip install pyautogui psutil pygetwindow
+pip install requests
+pip install beautifulsoup4
+pip install pandas
