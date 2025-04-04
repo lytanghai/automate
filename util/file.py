@@ -164,7 +164,7 @@ def check_if_excel_running():
     return None
 
 def focus_excel_full_screen(file_name):
-    print("Switch to excel")
+    print("Switch to excel!")
     excel_window = check_if_excel_running()
     
     if excel_window:

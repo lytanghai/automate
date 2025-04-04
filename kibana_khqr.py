@@ -88,9 +88,9 @@ def user_prompt():
     print(Fore.GREEN + '''
                                     Instruction!
 1. Create a folder: Create a new folder named "Invoicing_KHQR" in the (D:) drive.
-2. Copy the Excel file: file into the "Invoicing_KHQR" folder.
+2. Copy the Excel file: copy file into the "Invoicing_KHQR" folder.
 3. Open Kibana: Open Google Chrome and navigate to the Kibana invoicing application: https://logging.wingmarket.com/app/logtrail#/?q=&h=All&t=Now&i=invoicing*&_g=()
-4. Assume: File Name: "02-Apr-25-(KHR)-Transaction Success but supplier did not receive credit".
+4. Assume file name: "02-Apr-25-(KHR)-Transaction Success but supplier did not receive credit".
 5. Run the script: py kibana.khqr.py "02-Apr-25-(KHR)-Transaction Success but supplier did not receive credit".
 6. Close the excel file before execute the script
     ''')
@@ -103,7 +103,6 @@ user_prompt()
 file_name_exc = ""
 if len(sys.argv) > 1:
     file_name_exc = sys.argv[1]
-    print(f"File name: {file_name_exc}")
 else:
     print("must input file name!")
     exit()
