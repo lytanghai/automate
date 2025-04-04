@@ -36,7 +36,6 @@ def copy_invoice_id(start_index, cell_name):
     cell_address = f"{cell_name}{start_index}"
     pyperclip.copy(cell_address)
     pyautogui.hotkey("ctrl", "v")
-    # pyautogui.write(cell_address, interval=0.1)
     time.sleep(1)
 
     pyautogui.press("enter")
@@ -95,11 +94,11 @@ def user_prompt():
 5. Run the script: py kibana.khqr.py "02-Apr-25-(KHR)-Transaction Success but supplier did not receive credit".
 6. Close the excel file before execute the script
     ''')
-# -----------------------------------------------------------------------------------------------
-# Execute script
+# -----------------------------------------------------------------------------------------------.
+#                                      Execute script                                            |
+# -----------------------------------------------------------------------------------------------.
 start_time = time.time()
 user_prompt()
-
 
 file_name_exc = ""
 if len(sys.argv) > 1:
@@ -141,11 +140,11 @@ if init_value:
     init_value = False
 
 for i in range(total_rows):
-    # time.sleep(0.5)
+    print("\nLog:")
     invoice_id = copy_invoice_id(start_index, invoice_id_on_cell)
     time.sleep(0.5)
     open_kibana_chrome_tab(tab_name)
-    # time.sleep(0.5)
+
     search_invoice(-1770, 1464, '"' + str(invoice_id).strip() + '"')
     time.sleep(1.5)
 

@@ -13,7 +13,6 @@ import os
 import win32com.client
 from openpyxl.utils import get_column_letter
 
-
 def open_excel_find_invoice_id(file_path, column_title):
 
     excel = win32com.client.Dispatch("Excel.Application")
@@ -68,7 +67,6 @@ def find_first_empty_cell_in_row(file_path, row_num):
         return first_empty_col_letter, second_empty_col_letter
 
     return openpyxl.utils.get_column_letter(1), openpyxl.utils.get_column_letter(2)
-
 
 def is_excel_file_open(file_name):
     for process in psutil.process_iter(['name', 'pid']):
@@ -140,7 +138,6 @@ def insert_value(file_name,cell, start_index, value):
     cell_address = f"{cell}{start_index}"
     pyperclip.copy(cell_address)
     pyautogui.hotkey("ctrl","v")
-    # pyautogui.write(cell_address, interval=0.1)
     time.sleep(1)
 
     pyautogui.press("enter")
@@ -167,6 +164,7 @@ def check_if_excel_running():
     return None
 
 def focus_excel_full_screen(file_name):
+    print("Switch to excel")
     excel_window = check_if_excel_running()
     
     if excel_window:

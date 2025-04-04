@@ -12,14 +12,12 @@ def search_by_keyword(keyword):
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.write(keyword)
 
-
 def extract_json_from_log(text):
     text = re.sub(r"WM\s*LogTrail\s*w", "", text)
     text = re.sub(r"access\s+denied.*", "", text, flags=re.IGNORECASE)
     text = re.sub(r"Oldest event reached.*", "", text, flags=re.IGNORECASE)
 
     return text[:-1] if text else text
-
 
 def split_log_by_timestamp(text):
     pattern = r"(?=\b[A-Z][a-z]{2} \d{2} \d{2}:\d{2}:\d{2} :)"
@@ -34,7 +32,6 @@ def copy_from_screen():
     pyautogui.hotkey('ctrl', 'c')
     copied_text = pyperclip.paste()
     return split_log_by_timestamp(extract_json_from_log(copied_text[:10000]))
-
 
 def verify_chunk(chunk):
     if '/api/invoice/callback' in chunk:
