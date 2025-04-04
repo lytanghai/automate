@@ -21,14 +21,18 @@ from util.file import open_excel
 from util.file import insert_value
 from util.file import count_excel_rows
 from util.file import focus_excel_full_screen
-
+from util.file import fill_no_call_in_column_s_string
+from util.file import open_excel_find_invoice_id
+from util.file import find_first_empty_cell_in_row
 
 def copy_invoice_id(start_index, cell_name):
     pyautogui.hotkey("ctrl", "g")
     time.sleep(1)
 
     cell_address = f"{cell_name}{start_index}"
-    pyautogui.write(cell_address, interval=0.1)
+    pyperclip.copy(cell_address)
+    pyautogui.hotkey("ctrl", "v")
+    # pyautogui.write(cell_address, interval=0.1)
     time.sleep(1)
 
     pyautogui.press("enter")
@@ -66,30 +70,27 @@ def search_invoice(x,y, invoice_id):
     pyautogui.click(x, y)
     delete_all()
     time.sleep(1) 
-    pyautogui.write(invoice_id, interval=0.1)
+    pyperclip.copy(invoice_id)
+    pyautogui.hotkey("ctrl", "v")
+
     time.sleep(1) 
     pyautogui.press("enter")
 
 def click(x,y):
     pyautogui.click(x, y)
 
-# def save_file(file_name):
-#     pyautogui.hotkey("ctrl", "s")
-
-# def close_file():
-#     pyautogui.hotkey("alt", "f4")
 # -----------------------------------------------------------------------------------------------
 # Execute script
-
-insert_remark_on_cell = "X"
-insert_hash_id_on_cell = "Y"
-invoice_id_on_cell = "N"
-start_index = 3
-header_index = start_index - 1
+file_name_exc = "02-Apr-25-(KHR)-Transaction Success but supplier not receive credit"
+file_name = rf"D:\task\{file_name_exc}.xlsx"
 tab_name = "LogTrail - Kibana"
 init_value = True
-file_name_exc = "02-Apr-25-(USD)-Transaction Success but supplier not receive credit"
-file_name = rf"D:\task\{file_name_exc}.xlsx"
+start_index = 3
+# insert_remark_on_cell = "X"
+insert_remark_on_cell, insert_hash_id_on_cell = find_first_empty_cell_in_row(file_name, 2)
+invoice_id_on_cell = open_excel_find_invoice_id(file_name, "invoice_id")
+
+header_index = start_index - 1
 
 focus_excel_full_screen(file_name)
 
@@ -105,17 +106,17 @@ if init_value:
     init_value = False
 
 for i in range(total_rows):
-    time.sleep(1)
+    time.sleep(0.5)
     invoice_id = copy_invoice_id(start_index, invoice_id_on_cell)
+    time.sleep(0.5)
     open_kibana_chrome_tab(tab_name)
-    time.sleep(1)
-
+    time.sleep(0.5)
     search_invoice(-1770, 1464, '"' + str(invoice_id).strip() + '"')
-    time.sleep(1)
+    time.sleep(1.5)
 
     delete_all()
     copied_result = copy_from_screen()
-    time.sleep(1)
+    
     focus_excel_full_screen(file_name)
     hash_id = ''
 

@@ -28,7 +28,6 @@ def split_log_by_timestamp(text):
 
 def copy_from_screen():
     pyautogui.moveTo(-1200, 780)
-    time.sleep(0.5)
     pyautogui.click(-1200, 780)
     time.sleep(1)
     pyautogui.hotkey('ctrl', 'a')
@@ -38,10 +37,8 @@ def copy_from_screen():
 
 
 def verify_chunk(chunk):
-    print(f'chunkkkk: {chunk}') 
     if '/api/invoice/callback' in chunk:
         json_data = convert_log_to_json(chunk) 
-        print(f"json chunk: {json_data}")
         if json_data:
             if json_data.get("hash_id") == 'N/A':
                 return 'hash id is empty'
@@ -50,7 +47,6 @@ def verify_chunk(chunk):
     return None
 
 def verify_success_callback_chunk(chunk):
-    print(f'chunkkkk: {chunk}') 
     if 'http-outgoing response 200' in chunk and '/api/transactions/execute' in chunk:
         return True
     return False    

@@ -10,6 +10,65 @@ import openpyxl
 from openpyxl.utils import column_index_from_string
 import os
 
+import win32com.client
+from openpyxl.utils import get_column_letter
+
+
+def open_excel_find_invoice_id(file_path, column_title):
+
+    excel = win32com.client.Dispatch("Excel.Application")
+    excel.Visible = True 
+
+    try:
+        workbook = excel.Workbooks.Open(file_path)
+        time.sleep(1.5) 
+        focus_excel_full_screen(file_path)
+        if excel.ProtectedViewWindows.Count > 0:
+            for pv in excel.ProtectedViewWindows:
+                if file_path in pv.Workbook.FullName:
+                    print(f"File '{file_path}' is in Protected View. Enabling editing...")
+                    pv.Edit()
+                    time.sleep(2)
+
+
+        for sheet in workbook.Sheets:
+            used_range = sheet.UsedRange  
+            for row in range(1, used_range.Rows.Count + 1):
+                for col in range(1, used_range.Columns.Count + 1):
+                    cell_value = str(used_range.Cells(row, col).Value).strip() if used_range.Cells(row, col).Value else ""
+                    if cell_value.lower() == column_title:
+                        column_letter = get_column_letter(col) 
+                        print(f"Found {column_title} at Sheet: {sheet.Name}, Column: {column_letter}")
+                        return column_letter 
+
+        print("No cell with 'Invoice_ID' found in the file.")
+        return None
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+    finally:
+        pass  
+
+def find_first_empty_cell_in_row(file_path, row_num):
+    workbook = openpyxl.load_workbook(file_path)
+    sheet = workbook.active
+
+    row_values = list(sheet.iter_rows(min_row=row_num, max_row=row_num, values_only=True))[0]
+
+    last_filled_col = 0
+    for col_idx, value in enumerate(row_values, start=1):
+        if value not in (None, ""): 
+            last_filled_col = col_idx
+
+    if last_filled_col > 0:
+        first_empty_col_letter = openpyxl.utils.get_column_letter(last_filled_col + 1)
+        second_empty_col_letter = openpyxl.utils.get_column_letter(last_filled_col + 2)
+        return first_empty_col_letter, second_empty_col_letter
+
+    return openpyxl.utils.get_column_letter(1), openpyxl.utils.get_column_letter(2)
+
 
 def is_excel_file_open(file_name):
     for process in psutil.process_iter(['name', 'pid']):
@@ -55,14 +114,11 @@ def is_excel_file_open(file_name):
     return False
 
 def open_excel(fileName):
-    """Opens an Excel file if not already open, or brings it to focus."""
-
     excel_file_path = fileName
     
     if not is_excel_file_open(fileName):
         print(f"Opening Excel file: {fileName}")
         os.startfile(excel_file_path)
-        # focus_excel_full_screen(excel_file_path)
         time.sleep(2)
     
     try:
@@ -87,11 +143,8 @@ def insert_value(file_name,cell, start_index, value):
 
     pyautogui.press("enter")
     time.sleep(1)
-
-    pyautogui.write(value, interval=0.1)
-    time.sleep(1)
-
-    pyautogui.press("enter")
+    pyperclip.copy(value)
+    pyautogui.hotkey("ctrl","v")
 
     time.sleep(1)  
 
@@ -101,11 +154,9 @@ def count_excel_rows(file_path, start_row):
     df = df.dropna(how='all')
 
     row_count = len(df.iloc[start_row:])
-    print("total row: ", row_count)
     return row_count
 
 def check_if_excel_running():
-    """Check if an Excel window is open."""
     windows = gw.getAllTitles()
     for window in windows:
         if "Excel" in window:
@@ -129,7 +180,6 @@ def save_file(file_name):
 
 def close_file():
     pyautogui.hotkey("alt", "f4")
-
 
 def fill_no_call_in_column_s_string(file_path, cell_name):
     try:
