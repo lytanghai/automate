@@ -5,7 +5,10 @@ import pygetwindow as gw
 import time
 import psutil
 import os
+import sys
 import pyperclip
+
+from datetime import datetime
 
 from util.hotkey import press_tab
 from util.hotkey import delete_all
@@ -81,12 +84,28 @@ def click(x,y):
 
 # -----------------------------------------------------------------------------------------------
 # Execute script
-file_name_exc = "02-Apr-25-(KHR)-Transaction Success but supplier not receive credit"
+
+file_name_exc = ""
+if len(sys.argv) > 1:
+    file_name_exc = sys.argv[1]
+    print(f"The parameter is: {file_name_exc}")
+else:
+    print("must input file name!")
+    exit()
+
 file_name = rf"D:\task\{file_name_exc}.xlsx"
+
+current_time = datetime.now().strftime("%d/%m/%Y : %I:%M:%S %p")
+
+print(f"""
+FILE NAME: {file_name_exc}.xlsx
+STARTED BY: {os.getlogin()}
+DATE: {current_time}
+""")
+
 tab_name = "LogTrail - Kibana"
 init_value = True
 start_index = 3
-# insert_remark_on_cell = "X"
 insert_remark_on_cell, insert_hash_id_on_cell = find_first_empty_cell_in_row(file_name, 2)
 invoice_id_on_cell = open_excel_find_invoice_id(file_name, "invoice_id")
 
@@ -135,5 +154,7 @@ for i in range(total_rows):
     start_index += 1 
 
 save_file(file_name)
+print("File is saved successfully!")
+time.sleep(2)
 close_file()
 fill_no_call_in_column_s_string(file_name, insert_remark_on_cell)
