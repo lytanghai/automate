@@ -132,11 +132,13 @@ def open_excel(fileName):
 
 def insert_value(file_name,cell, start_index, value):
 
-    pyautogui.hotkey("ctrl", "g")
-    time.sleep(1)
-
     cell_address = f"{cell}{start_index}"
     pyperclip.copy(cell_address)
+    pyautogui.hotkey("ctrl", "g")
+
+    time.sleep(0.5)
+
+    print('cell: ', cell_address)
     pyautogui.hotkey("ctrl","v")
     time.sleep(1)
 

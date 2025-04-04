@@ -30,19 +30,20 @@ from util.file import open_excel_find_invoice_id
 from util.file import find_first_empty_cell_in_row
 
 def copy_invoice_id(start_index, cell_name):
-    pyautogui.hotkey("ctrl", "g")
-    time.sleep(1)
 
     cell_address = f"{cell_name}{start_index}"
     pyperclip.copy(cell_address)
+    pyautogui.hotkey("ctrl", "g")
+
+    time.sleep(0.5)
     pyautogui.hotkey("ctrl", "v")
-    time.sleep(1)
+    time.sleep(0.5)
 
     pyautogui.press("enter")
-    time.sleep(1)
+    time.sleep(0.5)
 
     pyautogui.hotkey("ctrl", "c")
-    time.sleep(1) 
+    time.sleep(0.5) 
 
     invoice_id = pyperclip.paste()
 
@@ -69,6 +70,7 @@ def open_kibana_chrome_tab(tab_name):
             return True
 
     print(f"No Chrome tab with title '{tab_name}' found.")
+    exit()
     return False
 
 def search_invoice(x,y, invoice_id):
@@ -122,7 +124,8 @@ init_value = True
 start_index = 3
 insert_remark_on_cell, insert_hash_id_on_cell = find_first_empty_cell_in_row(file_name, 2)
 invoice_id_on_cell = open_excel_find_invoice_id(file_name, "invoice_id")
-
+print(insert_remark_on_cell)
+print(insert_hash_id_on_cell)
 header_index = start_index - 1
 
 focus_excel_full_screen(file_name)
@@ -134,13 +137,16 @@ time.sleep(1)
 
 if init_value:
     click(-1238, 170)
+    print(header_index)
     insert_value(file_name, insert_remark_on_cell, header_index, 'Result')
+    time.sleep(0.5)
     insert_value(file_name, insert_hash_id_on_cell, header_index, "Txn first paid")
     init_value = False
 
 for i in range(total_rows):
-    print("\nLog:")
+
     invoice_id = copy_invoice_id(start_index, invoice_id_on_cell)
+    print("\nLog:")
     time.sleep(0.5)
     open_kibana_chrome_tab(tab_name)
 
