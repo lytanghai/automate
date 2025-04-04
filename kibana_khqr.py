@@ -9,6 +9,7 @@ import sys
 import pyperclip
 
 from datetime import datetime
+from colorama import Fore, Style, init
 
 from util.hotkey import press_tab
 from util.hotkey import delete_all
@@ -53,16 +54,18 @@ def open_kibana_chrome_tab(tab_name):
         if process.info['name'] and 'chrome' in process.info['name'].lower():
             break
     else:
-        print("Chrome is not running.")
+        print(Fore.RED + "Chrome is not running.")
         return False
-
-    # Get all Chrome windows
     chrome_windows = gw.getWindowsWithTitle(tab_name)
 
     for window in chrome_windows:
         if tab_name in window.title:
-            print(f"Tab '{tab_name}' found in Chrome.")
-            window.activate()
+            print("Switch to Kibana!")
+            if window.isMinimized:
+                window.restore()
+            
+            window.activate() 
+            
             time.sleep(1)
             return True
 
@@ -82,22 +85,35 @@ def search_invoice(x,y, invoice_id):
 def click(x,y):
     pyautogui.click(x, y)
 
+def user_prompt():
+    print(Fore.GREEN + '''
+                                    Instruction!
+1. Create a folder: Create a new folder named "Invoicing_KHQR" in the (D:) drive.
+2. Copy the Excel file: file into the "Invoicing_KHQR" folder.
+3. Open Kibana: Open Google Chrome and navigate to the Kibana invoicing application: https://logging.wingmarket.com/app/logtrail#/?q=&h=All&t=Now&i=invoicing*&_g=()
+4. Assume: File Name: "02-Apr-25-(KHR)-Transaction Success but supplier did not receive credit".
+5. Run the script: py kibana.khqr.py "02-Apr-25-(KHR)-Transaction Success but supplier did not receive credit".
+6. Close the excel file before execute the script
+    ''')
 # -----------------------------------------------------------------------------------------------
 # Execute script
+start_time = time.time()
+user_prompt()
+
 
 file_name_exc = ""
 if len(sys.argv) > 1:
     file_name_exc = sys.argv[1]
-    print(f"The parameter is: {file_name_exc}")
+    print(f"File name: {file_name_exc}")
 else:
     print("must input file name!")
     exit()
 
-file_name = rf"D:\task\{file_name_exc}.xlsx"
+file_name = rf"D:\Invoicing_KHQR\{file_name_exc}.xlsx"
 
 current_time = datetime.now().strftime("%d/%m/%Y : %I:%M:%S %p")
 
-print(f"""
+print(Fore.BLUE + f"""
 FILE NAME: {file_name_exc}.xlsx
 STARTED BY: {os.getlogin()}
 DATE: {current_time}
@@ -125,11 +141,11 @@ if init_value:
     init_value = False
 
 for i in range(total_rows):
-    time.sleep(0.5)
+    # time.sleep(0.5)
     invoice_id = copy_invoice_id(start_index, invoice_id_on_cell)
     time.sleep(0.5)
     open_kibana_chrome_tab(tab_name)
-    time.sleep(0.5)
+    # time.sleep(0.5)
     search_invoice(-1770, 1464, '"' + str(invoice_id).strip() + '"')
     time.sleep(1.5)
 
@@ -155,6 +171,9 @@ for i in range(total_rows):
 
 save_file(file_name)
 print("File is saved successfully!")
-time.sleep(2)
+time.sleep(0.5)
+end_time = time.time()
+
+print(f"Duration: {int(end_time - start_time)} seconds", )
 close_file()
 fill_no_call_in_column_s_string(file_name, insert_remark_on_cell)

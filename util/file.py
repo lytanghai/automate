@@ -138,7 +138,9 @@ def insert_value(file_name,cell, start_index, value):
     time.sleep(1)
 
     cell_address = f"{cell}{start_index}"
-    pyautogui.write(cell_address, interval=0.1)
+    pyperclip.copy(cell_address)
+    pyautogui.hotkey("ctrl","v")
+    # pyautogui.write(cell_address, interval=0.1)
     time.sleep(1)
 
     pyautogui.press("enter")
@@ -168,7 +170,6 @@ def focus_excel_full_screen(file_name):
     excel_window = check_if_excel_running()
     
     if excel_window:
-        print(f"Excel is already open: {excel_window}")
         excel_window = gw.getWindowsWithTitle(excel_window)[0]
         excel_window.activate()
         excel_window.restore()
