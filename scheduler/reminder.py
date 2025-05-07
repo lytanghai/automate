@@ -10,7 +10,7 @@ import json
 import datetime
 import os
 
-TASK_FILE = "tasks.json"
+TASK_FILE = "scheduler/tasks.json"
 
 class SchedulerApp:
     def __init__(self, root):
