@@ -138,6 +138,7 @@ time.sleep(1)
 if init_value:
     click(-1238, 170)
     print(header_index)
+    time.sleep(1)
     insert_value(file_name, insert_remark_on_cell, header_index, 'Result')
     time.sleep(0.5)
     insert_value(file_name, insert_hash_id_on_cell, header_index, "Txn first paid")
@@ -147,7 +148,7 @@ for i in range(total_rows):
 
     invoice_id = copy_invoice_id(start_index, invoice_id_on_cell)
     print("\nLog:")
-    time.sleep(0.5)
+    time.sleep(1)
     open_kibana_chrome_tab(tab_name)
 
     search_invoice(-1770, 1464, '"' + str(invoice_id).strip() + '"')

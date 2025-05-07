@@ -136,9 +136,9 @@ def insert_value(file_name,cell, start_index, value):
     pyperclip.copy(cell_address)
     pyautogui.hotkey("ctrl", "g")
 
-    time.sleep(0.5)
+    time.sleep(1)
 
-    print('cell: ', cell_address)
+    print(f'cell: {cell_address}')
     pyautogui.hotkey("ctrl","v")
     time.sleep(1)
 
