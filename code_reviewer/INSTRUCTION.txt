@@ -1,0 +1,18 @@
+I. Require Library Packages:
+    1. requests
+    2. tkcalendar
+    RUN: pip install requests tkcalendar
+
+II. Set Configuration
+    1. username = bitbucket username 
+    2. password = App Password Generated on Bitbucket
+    3. workspace = set one default workspace
+    4. cache_file = do not rename this
+    5. cache_expiration = 86400 = 24 Hours => Default life time of cache
+    6. min_approval = Rule for minimum of approval
+    7. min_default_reviewer_approval = Rule for minimum of dewfault reviewer approval
+    8. workspace_list = list of available workspace in bitbucket
+
+*How to run
+py main.py = normal execute
+py main.py --clear-cache = clear current cache before getting new cache
