@@ -124,8 +124,8 @@ init_value = True
 start_index = 3
 insert_remark_on_cell, insert_hash_id_on_cell = find_first_empty_cell_in_row(file_name, 2)
 invoice_id_on_cell = open_excel_find_invoice_id(file_name, "invoice_id")
-print(insert_remark_on_cell)
-print(insert_hash_id_on_cell)
+# print(insert_remark_on_cell)
+# print(insert_hash_id_on_cell)
 header_index = start_index - 1
 
 focus_excel_full_screen(file_name)
@@ -137,7 +137,7 @@ time.sleep(1)
 
 if init_value:
     click(-1238, 170)
-    print(header_index)
+    # print(header_index)
     time.sleep(1)
     insert_value(file_name, insert_remark_on_cell, header_index, 'Result')
     time.sleep(0.5)
@@ -147,7 +147,7 @@ if init_value:
 for i in range(total_rows):
 
     invoice_id = copy_invoice_id(start_index, invoice_id_on_cell)
-    print("\nLog:")
+    # print("\nLog:")
     time.sleep(1)
     open_kibana_chrome_tab(tab_name)
 
@@ -159,7 +159,7 @@ for i in range(total_rows):
     
     focus_excel_full_screen(file_name)
     hash_id = ''
-
+    print(f"invoice id {invoice_id}")
     for index, chunk in enumerate(copied_result):
         hash_id = verify_chunk(chunk)
         is_executed_payment = verify_success_callback_chunk(chunk)

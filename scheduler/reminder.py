@@ -130,7 +130,7 @@ class SchedulerApp:
             elif task["type"] == "Select Date" and now == task["date"]:
                 self.show_notification("Reminder", task["description"])
 
-        if task["schedule"] == "Every X Minute":
+        if task["schedule"] == "Every X Minutes":
             schedule.every(1).minutes.do(job)
         elif task["schedule"] == "Every Minutes":
             try:

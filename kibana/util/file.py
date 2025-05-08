@@ -131,7 +131,7 @@ def open_excel(fileName):
         print("No 'Enable Editing' button detected. Excel is already in editing mode.")
 
 def insert_value(file_name,cell, start_index, value):
-
+    print(f"value to paste {value}")
     cell_address = f"{cell}{start_index}"
     pyperclip.copy(cell_address)
     pyautogui.hotkey("ctrl", "g")
@@ -145,6 +145,7 @@ def insert_value(file_name,cell, start_index, value):
     pyautogui.press("enter")
     time.sleep(1)
     pyperclip.copy(value)
+    pyautogui.hotkey("ctrl","v")
     pyautogui.hotkey("ctrl","v")
 
     time.sleep(1)  
