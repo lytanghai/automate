@@ -5,21 +5,20 @@ import os
 
 # Directory where the JSON file is stored
 DATA_DIR = "django_automation/library"
-os.makedirs(DATA_DIR, exist_ok=True)  # Create if not exists
+os.makedirs(DATA_DIR, exist_ok=True)
 DATA_FILE = os.path.join(DATA_DIR, "library_dict.json")
-test = ""
 
-def unused():
-    pass
 # Load and Save JSON
 def load_library_data():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
-            # Ensure we load it as a list, not a dict
-            data = json.load(f)
-            if not isinstance(data, list):
-                data = []  # In case the file contains a dict instead of a list
-            return data
+            try:
+                data = json.load(f)
+                if not isinstance(data, list):
+                    data = []
+                return data
+            except json.JSONDecodeError:
+                return []
     return []
 
 def save_library_data(data):
@@ -34,12 +33,12 @@ class LibraryReferenceApp:
         self.library_data = load_library_data()
 
         # --- Widgets ---
-        tk.Label(root, text="Search Import:").pack(pady=5)
+        tk.Label(root, text="Search Import or Description:").pack(pady=5)
         self.search_entry = tk.Entry(root, width=40)
         self.search_entry.pack(pady=5)
         self.search_entry.bind("<KeyRelease>", self.perform_search)
 
-        self.results_list = tk.Listbox(root, width=60, height=15)
+        self.results_list = tk.Listbox(root, width=80, height=15)
         self.results_list.pack(pady=10)
 
         # --- Buttons ---
@@ -49,45 +48,66 @@ class LibraryReferenceApp:
         tk.Button(btn_frame, text="Add Import", command=self.add_import_line).grid(row=0, column=0, padx=5)
         tk.Button(btn_frame, text="Delete Selected", command=self.delete_selected_entry).grid(row=0, column=1, padx=5)
 
+        self.perform_search()
+
     def perform_search(self, event=None):
         query = self.search_entry.get().lower()
         self.results_list.delete(0, tk.END)
 
-        for imp in self.library_data:
-            if query in imp.lower():
-                self.results_list.insert(tk.END, imp)
+        for entry in self.library_data:
+            import_line = entry.get("import", "")
+            description = entry.get("description", "")
+            if query in import_line.lower() or query in description.lower():
+                display = f"{import_line}  |  {description}"
+                self.results_list.insert(tk.END, display)
 
     def add_import_line(self):
-        # Ask for the complete import line
-        import_line = simpledialog.askstring("Import Line", "Enter the import line (e.g., 'import tkinter' or 'from tkinter import filedialog'):")
-        if not import_line:
+        # Prompt with a single input dialog for both import and description
+        user_input = simpledialog.askstring(
+            "Add Import",
+            "Enter import and description separated by '&'\nExample: import os | Standard library for OS operations"
+        )
+        if not user_input:
             return
 
-        import_line = import_line.strip()
+        # Split into import and description
+        parts = user_input.split("&", 1)
+        if len(parts) != 2:
+            messagebox.showerror("Format Error", "Please use the format: import_statement & description")
+            return
 
-        # Check if the import line already exists
-        if import_line not in self.library_data:
-            self.library_data.append(import_line)
-            save_library_data(self.library_data)
-            # messagebox.showinfo("Success", "Import line added.")
-            self.perform_search()
-        else:
-            messagebox.showinfo("Exists", "This import line already exists.")
+        import_line = parts[0].strip()
+        description = parts[1].strip()
 
+        # Check for duplicates
+        for entry in self.library_data:
+            if entry.get("import") == import_line:
+                messagebox.showinfo("Exists", "This import line already exists.")
+                return
+
+        # Save new entry
+        new_entry = {"import": import_line, "description": description}
+        self.library_data.append(new_entry)
+        save_library_data(self.library_data)
+        self.perform_search()
     def delete_selected_entry(self):
         selection = self.results_list.curselection()
+        print(f'delete result {selection}')
         if not selection:
             messagebox.showwarning("No Selection", "Select an import line to delete.")
             return
 
         idx = selection[0]
-        import_line = self.library_data[idx]
+        selected_text = self.results_list.get(idx).split("  |  ")[0]
 
-        confirm = messagebox.askyesno("Confirm Delete", f"Delete import line?\n\n{import_line}")
-        if confirm:
-            del self.library_data[idx]
-            save_library_data(self.library_data)
-            self.perform_search()
+        for i, entry in enumerate(self.library_data):
+            if entry.get("import") == selected_text:
+                confirm = messagebox.askyesno("Confirm Delete", f"Delete import line?\n\n{selected_text}")
+                if confirm:
+                    del self.library_data[i]
+                    save_library_data(self.library_data)
+                    self.perform_search()
+                return
 
 # Run the app
 if __name__ == "__main__":
