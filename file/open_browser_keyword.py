@@ -4,6 +4,9 @@ import os
 import sys
 import time
 
+# HOW TO RUN: 
+# py open_browser_keyword.py $extra_word $delay_duration[default 45s] $home[included==home_pc] 
+
 # === CONFIGURATION ===
 EXCEL_FILE = "temp/keywords.xlsx"         # Path to Excel file
 BRAVE_PATH = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
@@ -20,6 +23,13 @@ if len(sys.argv) > 2:
         DELAY_SECONDS = float(sys.argv[2])  # second argument = delay in seconds
     except ValueError:
         print("⚠ Invalid delay value. Using default delay of 45 seconds.")
+if len(sys.argv) > 3:
+    # 3rd arg = location keyword
+    location = sys.argv[3].lower()
+    if location == "home":
+        EXCEL_FILE = r"C:\Users\ASUS\Documents\keywords.xlsx"
+    else:
+        print(f"⚠ Unknown location '{location}', using default path.")
 
 # === FUNCTION TO LAUNCH DUCKDUCKGO SEARCH IN BRAVE INCOGNITO ===
 def open_in_brave(query):
