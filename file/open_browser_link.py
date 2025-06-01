@@ -3,7 +3,7 @@ import subprocess
 import os
 
 # === CONFIG ===
-EXCEL_FILE = "file_url.xlsx"      # Your Excel file
+EXCEL_FILE = "temp/file_url.xlsx"      # Your Excel file
 SHEET_NAME = 0                    # Sheet index or name
 URL_COLUMN = "URL"
 TITLE_COLUMN = "Title"
@@ -37,7 +37,7 @@ def open_brave(url):
         subprocess.Popen([BRAVE_PATH, "--incognito", url])
     except Exception as e:
         print(f"Error opening URL {url}: {e}")
-
+        
 # === Main Flow ===
 if __name__ == "__main__":
     is_quit = False
@@ -50,11 +50,11 @@ if __name__ == "__main__":
         show_links(df)
 
         # Ask user which links to open
-        selection = input("\nEnter number(s) to open (e.g., 1,3 or 'all'): ").strip().lower()
+        selection = input("\nEnter number(s) to open (e.g., 1,3 or a(all)) | q(quit): ").strip().lower()
         if selection == 'q' or selection == 'quit':
             break
-            
-        if selection == 'all':
+
+        if selection == 'all' or selection == 'a':
             for url in df[URL_COLUMN]:
                 open_brave(url)
         else:
