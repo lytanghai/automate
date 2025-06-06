@@ -10,7 +10,7 @@ def move_mouse():
         # Get current position
         x, y = pyautogui.position()
         # Move mouse slightly and back
-        pyautogui.moveTo(x + 50, y + 75, duration=2)
+        pyautogui.moveTo(x + 50, y + 65, duration=2)
         pyautogui.moveTo(x, y, duration=2)
         print("Mouse moved")
         time.sleep(5)

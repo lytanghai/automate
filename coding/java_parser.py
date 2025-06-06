@@ -21,20 +21,20 @@ def extract_conditions(java_code: str) -> str:
 
         if line.startswith("if"):
             condition = line.split("if", 1)[1].split("{")[0].strip()
-            add_line(f"IF {condition}")
+            add_line(f"if {condition}")
         elif line.startswith("else if"):
             condition = line.split("else if", 1)[1].split("{")[0].strip()
-            add_line(f"ELSE IF {condition}")
+            add_line(f"else if {condition}")
         elif line.startswith("else"):
-            add_line("ELSE")
+            add_line("else")
         elif line.startswith("switch"):
             condition = line.split("switch", 1)[1].split("{")[0].strip()
-            add_line(f"SWITCH {condition}")
+            add_line(f"switch {condition}")
         elif line.startswith("case"):
             condition = line.split("case", 1)[1].strip(":").strip()
-            add_line(f"CASE {condition}")
+            add_line(f"case {condition}")
         elif line.startswith("default"):
-            add_line("DEFAULT")
+            add_line("default")
 
         if "{" in line:
             indent_level += 1

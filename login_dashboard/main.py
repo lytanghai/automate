@@ -4,19 +4,18 @@ import pyperclip
 import time 
 
 import tkinter as tk
-from utilize import show_endpoint, open_chrome_tab, config
+from utilize import show_endpoint, open_chrome_tab, config, production, non_production
 from command import get_website, login_kibana, redirect_url
+from utilize import kibana, wingmarket, wing_digital, wing_helpdesk
 
 
 #*1
-kibana, wingmarket = config['website']['kibana'], config['website']['wingmarket']
-production, non_production = config['env']['production'], config['env']['non_production']
-
-#*2
 WEBSITE = {
     production: {
         kibana: "https://logging.wingmarket.com/app/logtrail#/?q=*&h=All&t=Now&i=invoicing*&_g=()",
-        wingmarket: "https://portal.wingmarket.com/"
+        wingmarket: "https://portal.wingmarket.com/",
+        wing_digital: "https://wingdigital.com/auth/login?returnUrl=/dashboard",
+        wing_helpdesk: "https://webhelpdesk.wingbank.com.kh:8283/HomePage.do"
     },
     non_production: {
 
@@ -32,7 +31,7 @@ def command_env(input):
     else:
         return "default"
     
-#*3
+#*2
 def command_web(input):
     input = int(str(input).split('.')[1])
 
@@ -40,6 +39,10 @@ def command_web(input):
         return kibana
     elif input == 2:
         return wingmarket
+    elif input == 3:
+        return wing_digital
+    elif input == 4:
+        return wing_helpdesk
     else:
         return "default"
         
@@ -68,8 +71,8 @@ if __name__ == "__main__":
     website_map = {
         "Prod Kibana": "2.1",
         "Prod Wingmarket": "2.2",
-        "Dev A": "3.1",
-        "Dev B": "3.2",
+        "Prod Wing Digital": "2.3",
+        "Prod Wing Helpdesk": "2.4",
         "Dev C": "4.1",
         "Dev D": "4.2",
         "Dev E": "5.1",
@@ -102,7 +105,7 @@ if __name__ == "__main__":
         row = i % max_rows
         col = i // max_rows
 
-        bg_color = "red" if "Prod" in label else "green"
+        bg_color = "#f08b12" if "Prod" in label else "green"
         fg_color = "white"
 
         tk.Button(

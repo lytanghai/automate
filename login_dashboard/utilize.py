@@ -12,6 +12,10 @@ if os.path.exists('settings.config'):
 else:
     print("Config file not found.")
 
+kibana, wingmarket, wing_digital = config['website']['kibana'], config['website']['wingmarket'], config['website']['wing_digital']
+wing_helpdesk = config['website']['wing_helpdesk']
+
+production, non_production = config['env']['production'], config['env']['non_production']
 
 def open_chrome_tab():
     subprocess.Popen([
@@ -32,6 +36,8 @@ def show_endpoint():
     print("PRODUCTION")
     print('2.1. Kibana')
     print('2.2 Wing Market')
+    print('2.3 Wing Digital')
+    print('2.4 Wing Helpdesk')
     print("-----------------------------------")
 
 
