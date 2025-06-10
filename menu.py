@@ -22,7 +22,7 @@ class MainWindow(tk.Tk):
         # Live-updating current datetime
         tk.Label(datetime_frame, text="Date:", fg="white", bg="#1e1b2e").grid(row=0, column=0, padx=5)
         self.date_entry = tk.Entry(datetime_frame, width=20)
-        self.date_entry.grid(row=0, column=1)
+        self.date_entry.grid(row=0, column=1)   
         self.update_datetime()  # Start updating
 
 

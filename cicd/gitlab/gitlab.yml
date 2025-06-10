@@ -1,0 +1,88 @@
+include:
+  - project: 'group/shared-ci-templates'
+    ref: main
+    file: '/templates/spring-template.yml'
+
+image: maven:3.9.6-eclipse-temurin-17
+
+stages:
+  - build
+  - test
+  - sonarqube
+  - docker
+  - deploy-dev
+  - deploy-staging
+  - deploy-prod
+
+variables:
+  DOCKER_IMAGE: registry.gitlab.com/my-group/my-app
+  MAVEN_CLI_OPTS: "-B -DskipTests"
+  SONAR_SCANNER_OPTS: "-Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=$SONAR_TOKEN"
+
+# Build
+build:
+  stage: build
+  extends: .maven-build
+  artifacts:
+    paths:
+      - target/*.jar
+
+# Test
+test:
+  stage: test
+  extends: .maven-test
+
+# SonarQube
+sonarqube:
+  stage: sonarqube
+  extends: .sonar-analysis
+  only:
+    - merge_requests
+    - branches
+
+# Docker build & push
+docker-build:
+  stage: docker
+  image: docker:24.0.5
+  services:
+    - docker:dind
+  extends: .docker-login
+  script:
+    - docker build -t $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA
+
+# Deploy to DEV
+deploy-dev:
+  stage: deploy-dev
+  script:
+    - echo "Deploying to DEV..."
+    - ./scripts/deploy.sh dev $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA
+  environment:
+    name: dev
+    url: https://dev.myapp.example.com
+  only:
+    - develop
+
+# Deploy to STAGING
+deploy-staging:
+  stage: deploy-staging
+  script:
+    - echo "Deploying to STAGING..."
+    - ./scripts/deploy.sh staging $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA #this should be in script/deploy.sh root project
+  environment:
+    name: staging
+    url: https://staging.myapp.example.com
+  only:
+    - staging
+
+# Deploy to PROD
+deploy-prod:
+  stage: deploy-prod
+  script:
+    - echo "Deploying to PRODUCTION..."
+    - ./scripts/deploy.sh prod $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA
+  environment:
+    name: production
+    url: https://myapp.example.com
+  only:
+    - main

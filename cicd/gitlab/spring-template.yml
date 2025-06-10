@@ -1,0 +1,32 @@
+default:
+  before_script:
+    - echo "Using shared Spring Boot CI template"
+    - java -version
+    - mvn -version
+
+# Optional: define caching globally
+cache:
+  paths:
+    - .m2/repository
+
+.variables_template:
+  variables:
+    MAVEN_CLI_OPTS: "-B -DskipTests"
+    SONAR_SCANNER_OPTS: "-Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=$SONAR_TOKEN"
+
+.maven-build:
+  script:
+    - mvn $MAVEN_CLI_OPTS clean package
+
+.maven-test:
+  script:
+    - mvn test
+
+.sonar-analysis:
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - sonar-scanner $SONAR_SCANNER_OPTS
+
+.docker-login:
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
